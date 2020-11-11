@@ -45,7 +45,7 @@ namespace Utils
                 //创建写入流
                 MemoryStream stream = new MemoryStream();
 
-                byte[] bArr = new byte[1024];
+                byte[] bArr = new byte[10240];
                 int size = responseStream.Read(bArr, 0, (int)bArr.Length);
                 while (size > 0)
                 {
@@ -59,8 +59,8 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                LogUtil.Error(ex);
-                return null;
+                LogUtil.Error("HttpUtil.HttpDownloadFile 下载文件 错误 URL：" + url);
+                throw ex;
             }
         }
         #endregion
@@ -112,8 +112,8 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                LogUtil.Error(ex);
-                return string.Empty;
+                LogUtil.Error("HttpUtil.HttpUploadFile 上传文件 错误 URL：" + url);
+                throw ex;
             }
         }
         #endregion
@@ -167,8 +167,8 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                LogUtil.Error(ex);
-                return string.Empty;
+                LogUtil.Error("HttpUtil.HttpPost POST请求 错误 URL：" + url + " DATA：" + data);
+                throw ex;
             }
         }
         #endregion
@@ -181,30 +181,38 @@ namespace Utils
         /// <param name="cookie">cookie</param>
         public static string HttpPost(string url, CookieContainer cookie = null, WebHeaderCollection headers = null)
         {
-            // 设置参数
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.CookieContainer = cookie;
-            request.Method = "POST";
-            request.ContentType = "application/json";
-
-            if (headers != null)
+            try
             {
-                foreach (string key in headers.Keys)
+                // 设置参数
+                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+                request.CookieContainer = cookie;
+                request.Method = "POST";
+                request.ContentType = "application/json";
+
+                if (headers != null)
                 {
-                    request.Headers.Add(key, headers[key]);
+                    foreach (string key in headers.Keys)
+                    {
+                        request.Headers.Add(key, headers[key]);
+                    }
                 }
+
+                //发送请求并获取相应回应数据
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                //直到request.GetResponse()程序才开始向目标网页发送Post请求
+                Stream instream = response.GetResponseStream();
+                StreamReader sr = new StreamReader(instream, Encoding.UTF8);
+                //返回结果网页（html）代码
+                string content = sr.ReadToEnd();
+                instream.Close();
+
+                return content;
             }
-
-            //发送请求并获取相应回应数据
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            //直到request.GetResponse()程序才开始向目标网页发送Post请求
-            Stream instream = response.GetResponseStream();
-            StreamReader sr = new StreamReader(instream, Encoding.UTF8);
-            //返回结果网页（html）代码
-            string content = sr.ReadToEnd();
-            instream.Close();
-
-            return content;
+            catch (Exception ex)
+            {
+                LogUtil.Error("HttpUtil.HttpPost POST请求 错误 URL：" + url);
+                throw ex;
+            }
         }
         #endregion
 
@@ -244,8 +252,8 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                LogUtil.Error(ex);
-                return string.Empty;
+                LogUtil.Error("HttpUtil.HttpGet GET请求 错误 URL：" + url);
+                throw ex;
             }
         }
         #endregion
@@ -299,9 +307,9 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                LogUtil.Error(ex);
+                LogUtil.Error("HttpUtil.HttpGet GET请求 错误 URL：" + url);
                 cookieOut = null;
-                return string.Empty;
+                throw ex;
             }
         }
         #endregion

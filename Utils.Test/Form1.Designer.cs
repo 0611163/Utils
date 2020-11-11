@@ -51,6 +51,7 @@ namespace Utils.Test
             this.btnLogTime = new System.Windows.Forms.Button();
             this.btnTask3 = new System.Windows.Forms.Button();
             this.btnTask4 = new System.Windows.Forms.Button();
+            this.btnIoc = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnLog
@@ -262,11 +263,22 @@ namespace Utils.Test
             this.btnTask4.UseVisualStyleBackColor = true;
             this.btnTask4.Click += new System.EventHandler(this.btnTask4_Click);
             // 
+            // btnIoc
+            // 
+            this.btnIoc.Location = new System.Drawing.Point(12, 303);
+            this.btnIoc.Name = "btnIoc";
+            this.btnIoc.Size = new System.Drawing.Size(100, 23);
+            this.btnIoc.TabIndex = 21;
+            this.btnIoc.Text = "IOC";
+            this.btnIoc.UseVisualStyleBackColor = true;
+            this.btnIoc.Click += new System.EventHandler(this.btnIoc_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1048, 697);
+            this.Controls.Add(this.btnIoc);
             this.Controls.Add(this.btnTask4);
             this.Controls.Add(this.btnTask3);
             this.Controls.Add(this.btnLogTime);
@@ -336,6 +348,7 @@ namespace Utils.Test
         private System.Windows.Forms.Button btnLogTime;
         private System.Windows.Forms.Button btnTask3;
         private System.Windows.Forms.Button btnTask4;
+        private System.Windows.Forms.Button btnIoc;
     }
 }
 

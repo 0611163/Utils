@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +39,9 @@ namespace Utils.Test
             {
                 if (_task0806 == null) _task0806 = new TaskSchedulerEx(100, 5000);
             });
+
+            ServiceHelper.RegisterAssembly("Utils.Test");
+            ServiceHelper.RegisterAssembly("Utils");
         }
         #endregion
 
@@ -740,6 +744,14 @@ namespace Utils.Test
                     }, new { clickCount = _clickCount, i = i });
                 }
             });
+        }
+        #endregion
+
+        #region IOC
+        private void btnIoc_Click(object sender, EventArgs e)
+        {
+            string result = ServiceHelper.Resove<ITestService>().Get("123");
+            Log(result);
         }
         #endregion
 

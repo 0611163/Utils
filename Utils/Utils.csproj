@@ -53,9 +53,12 @@
     <Compile Include="Cache\FileCacheUtil.cs" />
     <Compile Include="Cache\MemoryCacheUtil.cs" />
     <Compile Include="DateTime\DateTimeHelper.cs" />
+    <Compile Include="Ftp\FtpUtil.cs" />
     <Compile Include="Http\HttpUtil.cs" />
     <Compile Include="Image\ZoomImageUtil.cs" />
     <Compile Include="Ini\IniHelper.cs" />
+    <Compile Include="IOC\ServiceHelper.cs" />
+    <Compile Include="IOC\ServiceRegisterAttribute.cs" />
     <Compile Include="IP\IPHelper.cs" />
     <Compile Include="Log\LogTimeUtil.cs" />
     <Compile Include="Log\LogUtil.cs" />
