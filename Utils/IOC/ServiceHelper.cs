@@ -70,7 +70,7 @@ namespace Utils
             foreach (Type type in typeArr)
             {
                 Type typeIService = type.GetInterface(iServiceInterfaceName);
-                if (typeIService != null)
+                if (typeIService != null && !type.IsAbstract)
                 {
                     Type[] interfaceTypeArr = type.GetInterfaces();
                     object obj = Activator.CreateInstance(type);
