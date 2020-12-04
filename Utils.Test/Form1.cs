@@ -762,6 +762,8 @@ namespace Utils.Test
         {
             string result = ServiceHelper.Resove<ITestService>().Get("123");
             Log(result);
+            result = ServiceHelper.Resove<TestService>().Get("456");
+            Log(result);
         }
         #endregion
 

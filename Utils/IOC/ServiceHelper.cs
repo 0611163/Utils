@@ -80,6 +80,7 @@ namespace Utils
                         if (interfaceType != typeof(IService))
                         {
                             _dict.GetOrAdd(interfaceType, obj);
+                            _dict.GetOrAdd(type, obj);
                         }
                     }
                 }
