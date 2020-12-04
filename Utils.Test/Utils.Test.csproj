@@ -58,6 +58,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Service\Impl\TestTwoService.cs" />
     <Compile Include="Service\ITestService.cs" />
     <Compile Include="Models\PtCameraInfo.cs" />
     <Compile Include="Models\PtCameraInfo2.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Models\TestModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ITestTwoService.cs" />
     <Compile Include="TaskHelperExt.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

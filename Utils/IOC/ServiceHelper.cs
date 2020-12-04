@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Utils
@@ -14,14 +15,9 @@ namespace Utils
     {
         #region 变量
         /// <summary>
-        /// 对象集合
+        /// 接口的对象集合
         /// </summary>
         private static ConcurrentDictionary<Type, object> _dict = new ConcurrentDictionary<Type, object>();
-
-        /// <summary>
-        /// 实现接口的类集合
-        /// </summary>
-        private static ConcurrentDictionary<string, List<Type>> _dictInterfaceClassList = new ConcurrentDictionary<string, List<Type>>();
         #endregion
 
         #region Get 获取对象
@@ -54,23 +50,37 @@ namespace Utils
         /// <summary>
         /// 注册程序集
         /// </summary>
+        /// <param name="type">程序集中的一个类型</param>
+        public static void RegisterAssembly(Type type)
+        {
+            RegisterAssembly(Assembly.GetAssembly(type).FullName);
+        }
+
+        /// <summary>
+        /// 注册程序集
+        /// </summary>
         /// <param name="assemblyString">程序集名称的长格式</param>
         public static void RegisterAssembly(string assemblyString)
         {
             LogTimeUtil logTimeUtil = new LogTimeUtil();
             Assembly assembly = Assembly.Load(assemblyString);
             Type[] typeArr = assembly.GetTypes();
+            string iServiceInterfaceName = typeof(IService).FullName;
 
             foreach (Type type in typeArr)
             {
-                Type[] interfaceTypeArr = type.GetInterfaces();
-
-                foreach (Type interfaceType in interfaceTypeArr)
+                Type typeIService = type.GetInterface(iServiceInterfaceName);
+                if (typeIService != null)
                 {
-                    if (interfaceType.FullName != null)
+                    Type[] interfaceTypeArr = type.GetInterfaces();
+                    object obj = Activator.CreateInstance(type);
+
+                    foreach (Type interfaceType in interfaceTypeArr)
                     {
-                        List<Type> classTypeList = _dictInterfaceClassList.GetOrAdd(interfaceType.FullName, new List<Type>());
-                        classTypeList.Add(type);
+                        if (interfaceType != typeof(IService))
+                        {
+                            _dict.GetOrAdd(interfaceType, obj);
+                        }
                     }
                 }
             }
@@ -86,28 +96,74 @@ namespace Utils
         {
             Type interfaceType = typeof(T);
 
-            object obj = _dict.GetOrAdd(interfaceType, (key) =>
-            {
-                object result = null;
-
-                List<Type> classTypeList;
-                if (_dictInterfaceClassList.TryGetValue(interfaceType.FullName, out classTypeList))
-                {
-                    Type classType = classTypeList.Find(clsType =>
-                    {
-                        if (clsType.GetCustomAttributes(typeof(ServiceRegisterAttribute), false).Length > 0)
-                        {
-                            return true;
-                        }
-                        return false;
-                    });
-                    result = Activator.CreateInstance(classType);
-                }
-
-                return result;
-            });
+            object obj = null;
+            _dict.TryGetValue(interfaceType, out obj);
 
             return (T)obj;
+        }
+        #endregion
+
+        #region 启动所有服务
+        /// <summary>
+        /// 启动所有服务
+        /// </summary>
+        public static Task StartAllService()
+        {
+            return Task.Run(() =>
+            {
+                List<Task> taskList = new List<Task>();
+                foreach (object o in _dict.Values.Distinct())
+                {
+                    Task task = Task.Factory.StartNew(obj =>
+                    {
+                        IService service = obj as IService;
+
+                        try
+                        {
+                            service.OnStart();
+                            LogUtil.Log("服务 " + obj.GetType().FullName + " 已启动");
+                        }
+                        catch (Exception ex)
+                        {
+                            LogUtil.Error(ex, "服务 " + obj.GetType().FullName + " 启动失败");
+                        }
+                    }, o);
+                    taskList.Add(task);
+                }
+                Task.WaitAll(taskList.ToArray());
+            });
+        }
+        #endregion
+
+        #region 停止所有服务
+        /// <summary>
+        /// 停止所有服务
+        /// </summary>
+        public static Task StopAllService()
+        {
+            return Task.Run(() =>
+            {
+                List<Task> taskList = new List<Task>();
+                foreach (object o in _dict.Values.Distinct())
+                {
+                    Task task = Task.Factory.StartNew(obj =>
+                    {
+                        IService service = obj as IService;
+
+                        try
+                        {
+                            service.OnStop();
+                            LogUtil.Log("服务 " + obj.GetType().FullName + " 已停止").Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogUtil.Error(ex, "服务 " + obj.GetType().FullName + " 停止失败").Wait();
+                        }
+                    }, o);
+                    taskList.Add(task);
+                }
+                Task.WaitAll(taskList.ToArray());
+            });
         }
         #endregion
 

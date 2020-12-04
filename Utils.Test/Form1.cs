@@ -40,8 +40,18 @@ namespace Utils.Test
                 if (_task0806 == null) _task0806 = new TaskSchedulerEx(100, 5000);
             });
 
-            ServiceHelper.RegisterAssembly("Utils.Test");
-            ServiceHelper.RegisterAssembly("Utils");
+            ServiceHelper.RegisterAssembly(typeof(ITestService));
+            ServiceHelper.StartAllService();
+        }
+        #endregion
+
+        #region Form1_FormClosed
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            new Thread(new ThreadStart(() =>
+            {
+                ServiceHelper.StopAllService().Wait();
+            })).Start();
         }
         #endregion
 
