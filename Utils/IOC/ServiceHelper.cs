@@ -74,13 +74,13 @@ namespace Utils
                 {
                     Type[] interfaceTypeArr = type.GetInterfaces();
                     object obj = Activator.CreateInstance(type);
+                    _dict.GetOrAdd(type, obj);
 
                     foreach (Type interfaceType in interfaceTypeArr)
                     {
                         if (interfaceType != typeof(IService))
                         {
                             _dict.GetOrAdd(interfaceType, obj);
-                            _dict.GetOrAdd(type, obj);
                         }
                     }
                 }
