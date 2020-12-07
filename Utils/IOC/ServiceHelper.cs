@@ -145,20 +145,24 @@ namespace Utils
             return Task.Run(() =>
             {
                 List<Task> taskList = new List<Task>();
+                Type iServiceInterfaceType = typeof(IService);
                 foreach (object o in _dict.Values.Distinct())
                 {
                     Task task = Task.Factory.StartNew(obj =>
                     {
-                        IService service = obj as IService;
+                        if (iServiceInterfaceType.IsAssignableFrom(obj.GetType()))
+                        {
+                            IService service = obj as IService;
 
-                        try
-                        {
-                            service.OnStop();
-                            LogUtil.Log("服务 " + obj.GetType().FullName + " 已停止").Wait();
-                        }
-                        catch (Exception ex)
-                        {
-                            LogUtil.Error(ex, "服务 " + obj.GetType().FullName + " 停止失败").Wait();
+                            try
+                            {
+                                service.OnStop();
+                                LogUtil.Log("服务 " + obj.GetType().FullName + " 已停止").Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                LogUtil.Error(ex, "服务 " + obj.GetType().FullName + " 停止失败").Wait();
+                            }
                         }
                     }, o);
                     taskList.Add(task);
