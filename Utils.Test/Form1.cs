@@ -760,9 +760,11 @@ namespace Utils.Test
         #region IOC
         private void btnIoc_Click(object sender, EventArgs e)
         {
-            string result = ServiceHelper.Resove<ITestService>().Get("123");
+            string result = ServiceHelper.Get<ITestService>().Get("123");
             Log(result);
-            result = ServiceHelper.Resove<TestService>().Get("456");
+            result = ServiceHelper.Get<TestService>().Get("456");
+            Log(result);
+            result = ServiceHelper.Get<TestService3>().GetVal3("789");
             Log(result);
         }
         #endregion

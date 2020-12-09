@@ -19,7 +19,6 @@ namespace Utils.Test
         /// </summary>
         public override void OnStart()
         {
-            Thread.Sleep(3000);
             LogUtil.Log("TestService OnStart");
         }
 
@@ -28,7 +27,6 @@ namespace Utils.Test
         // </summary>
         public override void OnStop()
         {
-            Thread.Sleep(3000);
             LogUtil.Log("TestService OnStop").Wait();
         }
 

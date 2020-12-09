@@ -20,22 +20,22 @@ namespace Utils
         private static ConcurrentDictionary<Type, object> _dict = new ConcurrentDictionary<Type, object>();
         #endregion
 
-        #region Get 获取对象
+        #region Get 获取实例
         /// <summary>
-        /// 获取对象
+        /// 获取实例
         /// </summary>
-        public static T Get<T>() where T : new()
+        public static T Get<T>()
         {
             Type type = typeof(T);
-            object obj = _dict.GetOrAdd(type, (key) => new T());
+            object obj = _dict.GetOrAdd(type, key => Activator.CreateInstance(type));
 
             return (T)obj;
         }
         #endregion
 
-        #region Get 通过Func获取对象
+        #region Get 通过Func获取实例
         /// <summary>
-        /// 获取对象
+        /// 获取实例
         /// </summary>
         public static T Get<T>(Func<T> func)
         {
@@ -86,21 +86,6 @@ namespace Utils
                 }
             }
             logTimeUtil.LogTime("ServiceHelper.RegisterAssembly 注册程序集 " + assemblyString + " 耗时");
-        }
-        #endregion
-
-        #region Resove<T> 实例化接口
-        /// <summary>
-        /// 实例化接口
-        /// </summary>
-        public static T Resove<T>()
-        {
-            Type interfaceType = typeof(T);
-
-            object obj = null;
-            _dict.TryGetValue(interfaceType, out obj);
-
-            return (T)obj;
         }
         #endregion
 

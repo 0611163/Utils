@@ -58,6 +58,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Service\Impl\TestService3.cs" />
     <Compile Include="Service\Impl\TestTwoService.cs" />
     <Compile Include="Service\ITestService.cs" />
     <Compile Include="Models\PtCameraInfo.cs" />
