@@ -29,9 +29,7 @@ namespace Utils
             {
                 Thread.Sleep(interval);
                 obj = func();
-                LogUtil.Log("等待变量初始化");
             }
-            LogUtil.Log("变量初始化完成");
         }
         #endregion
 
@@ -51,9 +49,7 @@ namespace Utils
             {
                 Thread.Sleep(interval);
                 obj = func();
-                LogUtil.Log("等待变量初始化");
             }
-            LogUtil.Log("变量初始化完成");
         }
         #endregion
 
@@ -73,9 +69,7 @@ namespace Utils
             {
                 Thread.Sleep(interval);
                 bl = func();
-                LogUtil.Log("等待条件为true");
             }
-            LogUtil.Log("条件为true");
         }
         #endregion
 
