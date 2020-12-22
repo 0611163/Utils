@@ -13,11 +13,11 @@ namespace Utils
     /// </summary>
     public static class CacheKey
     {
-        #region 缓存键
+        #region 缓存键前缀
         /// <summary>
-        /// 缓存键
+        /// 缓存键前缀
         /// </summary>
-        public static string Key
+        public static string KeyPre
         {
             get
             {

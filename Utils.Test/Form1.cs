@@ -772,14 +772,17 @@ namespace Utils.Test
         #region 缓存测试
         private void button2_Click(object sender, EventArgs e)
         {
-            List<string> result = MemoryCacheUtil.TryGetValue<List<string>>(CacheKey.Key, () =>
+            Log(GetTestData87("123"));
+            Log(GetTestData87("456"));
+        }
+
+        private string GetTestData87(string val)
+        {
+            return MemoryCacheUtil.TryGetValue<string>(CacheKey.KeyPre + val, () =>
             {
-                List<string> list = new List<string>();
-                list.Add("123");
-                list.Add("456");
-                return list;
-            });
-            Log(result[0]);
+                Log("计算值");
+                return "返回：" + val;
+            }, 10);
         }
         #endregion
 
