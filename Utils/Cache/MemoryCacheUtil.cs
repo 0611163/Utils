@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Utils
 {
@@ -25,6 +26,21 @@ namespace Utils
         /// 对不同的键提供不同的锁，用于读缓存
         /// </summary>
         private static ConcurrentDictionary<string, string> _dictLocksForReadCache = new ConcurrentDictionary<string, string>();
+
+        /// <summary>
+        /// 过期缓存检测Timer
+        /// </summary>
+        private static Timer _timerCheckCache;
+        #endregion
+
+        #region 静态构造函数
+        static MemoryCacheUtil()
+        {
+            _timerCheckCache = new Timer();
+            _timerCheckCache.Interval = 60 * 1000;
+            _timerCheckCache.Elapsed += _timerCheckCache_Elapsed;
+            _timerCheckCache.Start();
+        }
         #endregion
 
         #region 获取并缓存数据
@@ -38,8 +54,7 @@ namespace Utils
         /// <param name="refreshCache">立即刷新缓存</param>
         public static T TryGetValue<T>(string cacheKey, Func<T> func, int expirationSeconds = 0, bool refreshCache = false)
         {
-            string pre = "MemoryCacheUtil.TryGetValue<T>";
-            lock (_dictLocksForReadCache.GetOrAdd(pre + cacheKey, pre + cacheKey))
+            lock (_dictLocksForReadCache.GetOrAdd(cacheKey, cacheKey))
             {
                 object cacheValue = MemoryCacheUtil.GetValue(cacheKey);
                 if (cacheValue != null && !refreshCache)
@@ -129,6 +144,39 @@ namespace Utils
         internal static void DeleteAll()
         {
             _cacheDict.Clear();
+        }
+        #endregion
+
+        #region 过期缓存检测
+        /// <summary>
+        /// 过期缓存检测
+        /// </summary>
+        private static void _timerCheckCache_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    foreach (string cacheKey in _cacheDict.Keys.ToList())
+                    {
+                        CacheData data;
+                        if (_cacheDict.TryGetValue(cacheKey, out data))
+                        {
+                            if (data.expirationSeconds > 0 && DateTime.Now.Subtract(data.updateTime).TotalSeconds > data.expirationSeconds)
+                            {
+                                CacheData temp;
+                                string strTemp;
+                                _cacheDict.TryRemove(cacheKey, out temp);
+                                _dictLocksForReadCache.TryRemove(cacheKey, out strTemp);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogUtil.Error(ex, "过期缓存检测出错");
+                }
+            });
         }
         #endregion
 
