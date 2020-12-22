@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\ActionUtil.cs" />
+    <Compile Include="Cache\CacheKey.cs" />
     <Compile Include="Cache\CacheUtil.cs" />
     <Compile Include="Cache\FileCacheUtil.cs" />
     <Compile Include="Cache\MemoryCacheUtil.cs" />

@@ -769,5 +769,19 @@ namespace Utils.Test
         }
         #endregion
 
+        #region 缓存测试
+        private void button2_Click(object sender, EventArgs e)
+        {
+            List<string> result = MemoryCacheUtil.TryGetValue<List<string>>(CacheKey.Key, () =>
+            {
+                List<string> list = new List<string>();
+                list.Add("123");
+                list.Add("456");
+                return list;
+            });
+            Log(result[0]);
+        }
+        #endregion
+
     }
 }
