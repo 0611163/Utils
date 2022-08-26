@@ -899,7 +899,7 @@ namespace Models
         }
 
         /// <summary>
-        /// 0全部 1天网 2雪亮 6支网
+        /// 0全部 1 2 6
         /// </summary>
         [DataMember(Order = 36)]
         public virtual int BuildPeriod
@@ -962,7 +962,7 @@ namespace Models
         }
 
         /// <summary>
-        /// 1、 车辆卡口； 2、 人员卡口；3、 微卡口；4、WIFI采集；5、综合治理枪；6、 综合治理球； 7、人脸摄像机（后智能）；8、虚拟卡口；9、高点监控（球）；10、高点监控（枪）；11、视频结构化（后智能）；99、其他。可以多选，各参数以“ /” 分隔（天网：CAMERA_USE）
+        /// 1、 车辆卡口； 2、 人员卡口；3、 微卡口；4、WIFI采集；5、综合治理枪；6、 综合治理球； 7、人脸摄像机（后智能）；8、虚拟卡口；9、高点监控（球）；10、高点监控（枪）；11、视频结构化（后智能）；99、其他。可以多选，各参数以“ /” 分隔（：CAMERA_USE）
         /// </summary>
         [DataMember(Order = 39)]
         public virtual int CAMERA_FUN_TYPE
@@ -983,7 +983,7 @@ namespace Models
         }
 
         /// <summary>
-        /// 1、第一道防控圈；2、第二道防控圈；3、第三道防空圈；4、第四道防控圈；5、第五道防控圈；6、第六道防控圈；99、其他（天网：重点监控对象）
+        /// 1、第一道防控圈；2、第二道防控圈；3、第三道防空圈；4、第四道防控圈；5、第五道防控圈；6、第六道防控圈；99、其他（：）
         /// </summary>
         [DataMember(Order = 40)]
         public virtual int IMPORT_WATCH
